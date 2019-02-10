@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import smtplib
 from email.mime.text import MIMEText
-from datetime import datetime
+import datetime
 
 #load env
 import os
@@ -19,7 +19,11 @@ load_dotenv(dotenv_path)
 status = os.getenv('STATUS')
 print(status)
 
-mail_html = "<html><head><body>"+datetime.today().strftime("%Y/%m/%d %H:%M:%S")+"<br>"  # YYYY/mm/dd HH:MM:SS 형태의 시간 출력
+utc_time = datetime.datetime.today()
+time_gap = datetime.timedelta(hours=9)
+kor_time = utc_time + time_gap
+
+mail_html = "<html><head><body>"+kor_time.strftime("%Y/%m/%d %H:%M:%S")+"<br>"  # YYYY/mm/dd HH:MM:SS 형태의 시간 출력
 
 mail_html += "<h1>NEWS</h1>"
 # for news crawl
