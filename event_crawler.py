@@ -1,4 +1,8 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import requests
 from bs4 import BeautifulSoup
 import smtplib
