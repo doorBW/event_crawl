@@ -19,11 +19,23 @@ load_dotenv(dotenv_path)
 status = os.getenv('STATUS')
 print(status)
 
-utc_time = datetime.datetime.today()
+utc_time = datetime.datetime.utcnow()
 time_gap = datetime.timedelta(hours=9)
 kor_time = utc_time + time_gap
 
 mail_html = "<html><head><body>"+kor_time.strftime("%Y/%m/%d %H:%M:%S")+"<br>"  # YYYY/mm/dd HH:MM:SS 형태의 시간 출력
+
+mail_html += "<h1>STUDY</h1>"
+# for study crawl
+req = requests.get("https://okky.kr/articles/gathering")
+html = req.text
+soup = BeautifulSoup(html, 'html.parser')
+study_titles = soup.select('div#list-article > div.panel > ul > li > div > h5 > a')
+study_titles_date = soup.select('div#list-article > div.panel > ul > li > div.list-group-item-author > div > div > div.date-created > span')
+for i in range(5):
+    mail_html += "<h4><a href='https://okky.kr"+study_titles[i].get('href')+"'>"+study_titles[i].text.strip()+"</a> _ "+study_titles_date[i].text.strip()+"</h4>"
+mail_html += "<h3><a href='https://okky.kr/articles/gathering'>스터디모임 관련글 모두 보기</a></h3><br><br>"
+
 
 mail_html += "<h1>NEWS</h1>"
 # for news crawl
@@ -61,7 +73,7 @@ smtp.login('doobw@likelion.org', os.getenv('PASSWORD'))
 # main html
 msg = MIMEText(mail_html,'html')
 # title
-msg['Subject'] = 'OKKY 커뮤니티 News & Event 상위 글'
+msg['Subject'] = 'OKKY 커뮤 Study & News & Event 상위 글'
 # from
 msg['From'] = os.getenv("FROM")
 # to
